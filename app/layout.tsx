@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rarible MCP Chat",
+  title: "NFT Market Analyst",
   description:
-    "Chat interface using OpenAI with Rarible Protocol MCP integration",
+    "Expert NFT analysis powered by Rarible Protocol MCP integration",
 };
 
 export default function RootLayout({

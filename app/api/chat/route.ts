@@ -20,10 +20,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Build conversation context from history
-    let conversationContext = "";
+    // Build conversation context with NFT specialist system prompt
+    let conversationContext =
+      "system: You are an expert NFT analyst and Rarible Protocol specialist. You have access to comprehensive Rarible tools for real-time NFT market data, collection analytics, trading activities, and blockchain operations. Always use your tools to provide accurate, data-driven insights about NFT collections, floor prices, market trends, and trading activities. Focus exclusively on NFT and blockchain topics. When users ask about collections, always try to fetch real data using the available Rarible tools.\n\n";
+
     if (conversationHistory.length > 0) {
-      conversationContext =
+      conversationContext +=
         conversationHistory
           .map((msg) => `${msg.role}: ${msg.content}`)
           .join("\n") + "\n";
@@ -41,7 +43,7 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini", // Use a model that supports MCP
+        model: "gpt-4o-mini-2024-07-18", // Latest GPT-4o-mini version
         tools: [
           {
             type: "mcp",

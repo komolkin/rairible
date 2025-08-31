@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowUp, Loader2, User, Bot } from "lucide-react";
 import { Message as MessageType, ChatRequest, ChatResponse } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   const [value, setValue] = useState("");
@@ -92,39 +93,56 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       {/* Header */}
       <div className="border-b p-4">
-        <h1 className="text-xl font-semibold">Rarible MCP Chat</h1>
+        <h1 className="text-xl font-semibold">NFT Market Analyst</h1>
         <p className="text-sm text-muted-foreground">
-          Chat with OpenAI using Rarible Protocol MCP
+          Real-time NFT analytics powered by Rarible Protocol
         </p>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-2 max-w-4xl mx-auto w-full">
         {messages.length === 0 ? (
-          <div className="text-center text-muted-foreground py-8">
-            <Bot className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>Start a conversation by typing a message below.</p>
-            <p className="text-xs mt-2">
-              Try asking about Rarible Protocol features or NFT operations.
+          <div className="text-center text-muted-foreground py-12">
+            <Bot className="h-16 w-16 mx-auto mb-6 opacity-40" />
+            <h3 className="text-lg font-medium mb-2">NFT Market Analyst</h3>
+            <p className="text-sm">
+              Your expert NFT analyst powered by Rarible Protocol
+            </p>
+            <p className="text-xs mt-2 opacity-70">
+              Ask about collection stats, floor prices, trading activities, or
+              market trends
             </p>
           </div>
         ) : (
           messages.map((message) => (
-            <Message key={message.id}>
-              <MessageAvatar
-                src={message.role === "user" ? "" : ""}
-                alt={message.role === "user" ? "User" : "Assistant"}
-                fallback={
-                  message.role === "user" ? (
-                    <User className="h-4 w-4" />
-                  ) : (
-                    <Bot className="h-4 w-4" />
-                  )
-                }
-              />
-              <MessageContent markdown className="flex-1">
+            <Message
+              key={message.id}
+              className={message.role === "user" ? "justify-end" : ""}
+            >
+              {message.role === "assistant" && (
+                <MessageAvatar
+                  src=""
+                  alt="Assistant"
+                  fallback={<Bot className="h-4 w-4" />}
+                />
+              )}
+              <MessageContent
+                markdown
+                className={cn(
+                  message.role === "user"
+                    ? "bg-primary text-primary-foreground ml-auto"
+                    : "bg-muted/50"
+                )}
+              >
                 {message.content}
               </MessageContent>
+              {message.role === "user" && (
+                <MessageAvatar
+                  src=""
+                  alt="User"
+                  fallback={<User className="h-4 w-4" />}
+                />
+              )}
             </Message>
           ))
         )}
@@ -137,10 +155,10 @@ export default function Home() {
               alt="Assistant"
               fallback={<Bot className="h-4 w-4" />}
             />
-            <MessageContent className="flex-1">
+            <MessageContent className="bg-muted/30">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Thinking...
+                <span className="text-sm">Analyzing with Rarible tools...</span>
               </div>
             </MessageContent>
           </Message>
@@ -159,15 +177,17 @@ export default function Home() {
             isLoading={isLoading}
           >
             <PromptInputTextarea
-              placeholder="Ask about Rarible Protocol, NFTs, or blockchain operations..."
+              placeholder="Ask about NFT collections, floor prices, market trends..."
               disabled={isLoading}
             />
             <PromptInputActions className="justify-end">
               <PromptInputAction tooltip="Send message">
                 <Button
                   size="icon"
-                  className="rounded-full"
+                  className="rounded-full cursor-pointer"
                   disabled={isLoading || !value.trim()}
+                  onClick={handleSubmit}
+                  type="button"
                 >
                   {isLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
